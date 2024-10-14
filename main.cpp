@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
     QApplication a(argc,argv);
     model_parameters mp;
 
-    mp.nr = 2;
-    mp.nz = 2;
+    mp.nr = 20;
+    mp.nz = 20;
     mp.K_sat = 1;
     mp.alpha = 20;
     mp.n = 1.8;
@@ -31,9 +31,12 @@ int main(int argc, char *argv[])
     string defaulttemppath = qApp->applicationDirPath().toStdString() + "/../../resources/";
     cout << "Default Template path = " + defaulttemppath +"\n";
     system->SetDefaultTemplatePath(defaulttemppath);
-    system->SetWorkingFolder("/home/arash/Projects/DryWellModels");
+    system->SetWorkingFolder("/home/arash/Projects/DryWellModels/");
     string settingfilename = qApp->applicationDirPath().toStdString() + "/../../resources/settings.json";
     system->SetSilent(false);
+    cout<<"Saving"<<endl;
+    system->SavetoScriptFile("/home/arash/Projects/DryWellModels/CreatedModel.ohq");
+
     cout<<"Solving ..."<<endl;
     system->Solve();
     cout<<"Writing outputs in '"<< system->GetWorkingFolder() + system->OutputFileName() +"'";
