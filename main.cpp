@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
     QApplication a(argc,argv);
     model_parameters mp;
 
-    mp.nr = 20;
-    mp.nz = 20;
+    mp.nr = 5;
+    mp.nz = 5;
     mp.K_sat = 1;
     mp.alpha = 20;
     mp.n = 1.8;
