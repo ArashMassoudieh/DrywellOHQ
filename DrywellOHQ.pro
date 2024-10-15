@@ -122,7 +122,8 @@ SOURCES += \
         ../jsoncpp/src/lib_json/json_value.cpp \
         ../jsoncpp/src/lib_json/json_writer.cpp \
         main.cpp \
-        modelcreator.cpp
+        modelcreator.cpp \
+        resultgrid.cpp
 
 HEADERS += \
     $$OHQPATH/include/Objective_Function.h \
@@ -184,7 +185,8 @@ HEADERS += \
     $$OHQPATH/src/BTC.hpp \
     $$OHQPATH/src/BTCSet.hpp \
     $$OHQPATH/include/reaction.h \
-    modelcreator.h
+    modelcreator.h \
+    resultgrid.h
 
 
 # Default rules for deployment.

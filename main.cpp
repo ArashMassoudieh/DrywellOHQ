@@ -3,6 +3,7 @@
 #include <QApplication>
 #include "qfileinfo.h"
 #include "modelcreator.h"
+#include "resultgrid.h"
 
 
 
@@ -40,7 +41,10 @@ int main(int argc, char *argv[])
     cout<<"Solving ..."<<endl;
     system->Solve();
     cout<<"Writing outputs in '"<< system->GetWorkingFolder() + system->OutputFileName() +"'";
-    system->GetOutputs().writetofile(system->GetWorkingFolder() + system->OutputFileName());
+    CTimeSeriesSet<double> output = system->GetOutputs();
+    output.writetofile(system->GetWorkingFolder() + system->OutputFileName());
+    ResultGrid resgrid(output,"theta",system);
+
     return 0;
 
 }

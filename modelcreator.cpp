@@ -39,8 +39,8 @@ bool ModelCreator::Create(model_parameters mp, System *system)
             B.SetVal("theta_res",mp.theta_r);
             B.SetVal("x",(i*dr+mp.rw)*4000);
             B.SetVal("y",(j*dz)*4000);
-            B.SetVal("act_X",i*dr+mp.rw);
-            B.SetVal("act_Y",-j*dz);
+            B.SetVal("act_X",(i+0.5)*dr+mp.rw);
+            B.SetVal("act_Y",-(j+0.5)*dz);
             system->AddBlock(B,false);
         }
 
@@ -67,7 +67,7 @@ bool ModelCreator::Create(model_parameters mp, System *system)
             B.SetVal("x",-mp.rw*4000);
             B.SetVal("y",(j*dz)*4000);
             B.SetVal("act_X",0);
-            B.SetVal("act_Y",-j*dz);
+            B.SetVal("act_Y",-(j+0.5)*dz);
             system->AddBlock(B,false);
         }
     }
