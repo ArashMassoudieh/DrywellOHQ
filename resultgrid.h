@@ -20,6 +20,8 @@ public:
     ResultGrid& operator=(const ResultGrid&);
     ResultGrid(const CTimeSeriesSet<double> &cts, const string &quantity, System *system);
     vector<point> Positions;
+    void WriteToVTP(const std::string &quanname, const std::string &filename, int i, const double &scale=1) const;
+    void WriteToVTP(const std::string &quanname, const std::string &filename, const double &scale=1) const;
 };
 
 #endif // RESULTGRID_H

@@ -14,8 +14,8 @@ int main(int argc, char *argv[])
     QApplication a(argc,argv);
     model_parameters mp;
 
-    mp.nr = 5;
-    mp.nz = 5;
+    mp.nr = 6;
+    mp.nz = 6;
     mp.K_sat = 1;
     mp.alpha = 20;
     mp.n = 1.8;
@@ -26,8 +26,9 @@ int main(int argc, char *argv[])
 
     System *system=new System();
     ModelCreator ModCreate;
+    cout<<"Creating model ..." <<endl;
     ModCreate.Create(mp,system);
-
+    cout<<"Creating model done..." <<endl;
 
     string defaulttemppath = qApp->applicationDirPath().toStdString() + "/../../resources/";
     cout << "Default Template path = " + defaulttemppath +"\n";
@@ -43,7 +44,10 @@ int main(int argc, char *argv[])
     cout<<"Writing outputs in '"<< system->GetWorkingFolder() + system->OutputFileName() +"'";
     CTimeSeriesSet<double> output = system->GetOutputs();
     output.writetofile(system->GetWorkingFolder() + system->OutputFileName());
+    cout<<"Getting results into grid"<<endl;
     ResultGrid resgrid(output,"theta",system);
+    cout<<"Writing VTPs"<<endl;
+    resgrid.WriteToVTP("Moisture_content",system->GetWorkingFolder()+"moisture.vtp");
 
     return 0;
 

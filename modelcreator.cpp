@@ -16,6 +16,7 @@ bool ModelCreator::Create(model_parameters mp, System *system)
     system->ReadSystemSettingsTemplate("/home/arash/Projects/QAquifolium/resources/settings.json");
     double dr = (mp.RadiousOfInfluence-mp.rw)/mp.nr;
     double dz = mp.DepthtoGroundWater/mp.nz;
+    cout<<"Main Soil Blocks"<<endl;
     for (int i=0; i<mp.nr; i++)
         for (int j=0; j<mp.nz; j++)
         {
@@ -43,7 +44,7 @@ bool ModelCreator::Create(model_parameters mp, System *system)
             B.SetVal("act_Y",-(j+0.5)*dz);
             system->AddBlock(B,false);
         }
-
+    cout<<"Soil Blocks under well"<<endl;
     for (int j=0; j<mp.nz; j++)
     {
         if (j*dz>mp.DepthofWell)
@@ -71,7 +72,7 @@ bool ModelCreator::Create(model_parameters mp, System *system)
             system->AddBlock(B,false);
         }
     }
-
+    cout<<"Horizontal links"<<endl;
     for (int i=0; i<mp.nr-1; i++)
         for (int j=0; j<mp.nz; j++)
         {
@@ -88,6 +89,7 @@ bool ModelCreator::Create(model_parameters mp, System *system)
             system->AddLink(L, ("Soil (" + QString::number(i+1) + "$" + QString::number(j) + ")").toStdString(), ("Soil (" + QString::number(i+2) + "$" + QString::number(j) + ")").toStdString(), false);
         }
 
+    cout<<"Horizontal links for central soils"<<endl;
     for (int j=0; j<mp.nz; j++)
     {
 
@@ -106,6 +108,7 @@ bool ModelCreator::Create(model_parameters mp, System *system)
         }
     }
     int well_layer=0;
+    cout<<"Vertical links for central soils"<<endl;
     for (int j=0; j<mp.nz-1; j++)
     {
 
@@ -120,7 +123,7 @@ bool ModelCreator::Create(model_parameters mp, System *system)
             system->AddLink(L, ("Soil (" + QString::number(0) + "$" + QString::number(j) + ")").toStdString(), ("Soil (" + QString::number(0) + "$" + QString::number(j+1) + ")").toStdString(), false);
         }
     }
-
+    cout<<"Vertical links"<<endl;
     for (int i=0; i<mp.nr; i++)
         for (int j=0; j<mp.nz-1; j++)
         {
@@ -135,7 +138,7 @@ bool ModelCreator::Create(model_parameters mp, System *system)
 
             system->AddLink(L, ("Soil (" + QString::number(i+1) + "$" + QString::number(j) + ")").toStdString(), ("Soil (" + QString::number(i+1) + "$" + QString::number(j+1) + ")").toStdString(), false);
         }
-
+    cout<<"Well"<<endl;
     Block well;
     well.SetQuantities(system->GetMetaModel(), "Well_aggregate");
     well.SetName("Well");
@@ -144,10 +147,12 @@ bool ModelCreator::Create(model_parameters mp, System *system)
     well.SetVal("_width",mp.rw*4000);
     well.SetVal("bottom_elevation",-mp.DepthofWell);
     well.SetVal("diameter",mp.rw*2);
+    well.SetVal("depth",0.5);
     well.SetVal("porosity",1);
     well.SetVal("x",-mp.rw*4000);
     well.SetVal("y",0);
     system->AddBlock(well,false);
+    cout<<"Well to soil"<<endl;
     for (int j=0; j<mp.nz; j++)
     {
         if (j*dz<mp.DepthofWell)
@@ -157,17 +162,18 @@ bool ModelCreator::Create(model_parameters mp, System *system)
             L.SetType("Well2soil horizontal link");
             L.SetVal("length",dr/2);
 
-            system->AddLink(L, "Well", ("Soil (" + QString::number(0) + "$" + QString::number(j) + ")").toStdString(), false);
+            system->AddLink(L, "Well", ("Soil (" + QString::number(1) + "$" + QString::number(j) + ")").toStdString(), false);
         }
     }
 
+    cout<<"Well to bottom"<<endl;
     Link well_to_bottom;
     well_to_bottom.SetQuantities(system->GetMetaModel(), "Well2soil vertical link");
     well_to_bottom.SetName("Well_to_bottom");
     well_to_bottom.SetType("Well2soil vertical link");
     system->AddLink(well_to_bottom,"Well",("Soil (" + QString::number(0) + "$" + QString::number(well_layer) + ")").toStdString(), false);
 
-
+    cout<<"Groundwater"<<endl;
     Block gw;
     gw.SetQuantities(system->GetMetaModel(), "fixed_head");
     gw.SetName("Ground Water");
@@ -180,10 +186,7 @@ bool ModelCreator::Create(model_parameters mp, System *system)
     gw.SetVal("y",mp.DepthtoGroundWater*4000+400);
     system->AddBlock(gw,false);
 
-
-
-
-
+    cout<<"Soil to Groundwater"<<endl;
     for (int i=0; i<mp.nr+1; i++)
     {
         Link L;
@@ -194,8 +197,9 @@ bool ModelCreator::Create(model_parameters mp, System *system)
         system->AddLink(L, ("Soil (" + QString::number(i) + "$" + QString::number(mp.nz-1) + ")").toStdString(), "Ground Water", false);
 
     }
-
+    cout<<"Populate functions"<<endl;
     system->PopulateOperatorsFunctions();
+    cout<<"Variable parents"<<endl;
     system->SetVariableParents();
     return true;
 }
