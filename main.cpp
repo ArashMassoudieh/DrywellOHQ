@@ -1,21 +1,17 @@
 #include "System.h"
 #include "Script.h"
-#include <QApplication>
 #include "qfileinfo.h"
 #include "modelcreator.h"
 #include "resultgrid.h"
-
-
+#include "vtk.h"
 
 
 int main(int argc, char *argv[])
 {
 
-    QApplication a(argc,argv);
     model_parameters mp;
-
-    mp.nr = 6;
-    mp.nz = 6;
+    mp.nr = 20;
+    mp.nz = 20;
     mp.K_sat = 1;
     mp.alpha = 20;
     mp.n = 1.8;
@@ -30,18 +26,18 @@ int main(int argc, char *argv[])
     ModCreate.Create(mp,system);
     cout<<"Creating model done..." <<endl;
 
-    string defaulttemppath = qApp->applicationDirPath().toStdString() + "/../../resources/";
+    string defaulttemppath = "/home/arash/Projects/QAquifolium/resources/";
     cout << "Default Template path = " + defaulttemppath +"\n";
     system->SetDefaultTemplatePath(defaulttemppath);
     system->SetWorkingFolder("/home/arash/Projects/DryWellModels/");
-    string settingfilename = qApp->applicationDirPath().toStdString() + "/../../resources/settings.json";
+    string settingfilename = "/home/arash/Projects/QAquifolium/resources/settings.json";
     system->SetSilent(false);
     cout<<"Saving"<<endl;
     system->SavetoScriptFile("/home/arash/Projects/DryWellModels/CreatedModel.ohq");
 
     cout<<"Solving ..."<<endl;
     system->Solve();
-    cout<<"Writing outputs in '"<< system->GetWorkingFolder() + system->OutputFileName() +"'";
+    cout<<"Writing outputs in '"<< system->GetWorkingFolder() + system->OutputFileName() +"'"<<endl;
     CTimeSeriesSet<double> output = system->GetOutputs();
     output.writetofile(system->GetWorkingFolder() + system->OutputFileName());
     cout<<"Getting results into grid"<<endl;

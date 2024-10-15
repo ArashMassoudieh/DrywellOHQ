@@ -1,7 +1,8 @@
 
+TEMPLATE = app
 
 QT -= gui
-QT += core widgets
+QT += core
 
 CONFIG += console
 CONFIG -= app_bundle
@@ -36,8 +37,8 @@ win32: DEFINES +=windows_version
 
 DEFINES += Terminal_version
 
-TARGET = OpenHydroQual-Console
-TEMPLATE = app
+TARGET = DrywellOHQ
+
 win32:QMAKE_CXXFLAGS += /MP
 
 macx: {

@@ -44,6 +44,7 @@ bool ModelCreator::Create(model_parameters mp, System *system)
             B.SetVal("act_Y",-(j+0.5)*dz);
             system->AddBlock(B,false);
         }
+
     cout<<"Soil Blocks under well"<<endl;
     for (int j=0; j<mp.nz; j++)
     {
@@ -72,6 +73,8 @@ bool ModelCreator::Create(model_parameters mp, System *system)
             system->AddBlock(B,false);
         }
     }
+
+
     cout<<"Horizontal links"<<endl;
     for (int i=0; i<mp.nr-1; i++)
         for (int j=0; j<mp.nz; j++)
@@ -197,6 +200,7 @@ bool ModelCreator::Create(model_parameters mp, System *system)
         system->AddLink(L, ("Soil (" + QString::number(i) + "$" + QString::number(mp.nz-1) + ")").toStdString(), "Ground Water", false);
 
     }
+
     cout<<"Populate functions"<<endl;
     system->PopulateOperatorsFunctions();
     cout<<"Variable parents"<<endl;

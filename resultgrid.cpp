@@ -25,8 +25,33 @@ ResultGrid& ResultGrid::operator=(const ResultGrid &rhs)
 {
     CTimeSeriesSet::operator=(rhs);
     Positions = rhs.Positions;
+    return *this;
 }
 
+ResultGrid::ResultGrid(const CTimeSeriesSet<double> &cts, const vector<string> &components, const string &quantity)
+{
+    for (unsigned int i=0; i<components.size(); i++)
+    {
+        if (cts.names[i]==components[i] + "_" + quantity)
+            append(cts.BTC[i],components[i]);
+    }
+}
+
+CTimeSeries<double> ResultGrid::Sum()
+{
+    CTimeSeries<double> out;
+    out = BTC[0];
+    for (unsigned int i = 1; i<BTC.size(); i++)
+    {
+        out %= BTC[i];
+    }
+    return out;
+}
+
+CTimeSeries<double> ResultGrid::SumIntegrate()
+{
+    return Sum().integrate();
+}
 
 ResultGrid::ResultGrid(const CTimeSeriesSet<double> &cts, const string &quantity, System *system)
 {
@@ -68,7 +93,7 @@ void ResultGrid::WriteToVTP(const std::string &quanname, const std::string &file
 
         for (unsigned int j = 0; j < nvars; j++)
         {
-            cout<<"Positions "<<j<<endl;
+            //cout<<"Positions "<<j<<endl;
             yy = Positions[j].y;
             xx = Positions[j].x;
             zz = BTC[j].GetC(i)*scale;
@@ -79,7 +104,7 @@ void ResultGrid::WriteToVTP(const std::string &quanname, const std::string &file
             points_3->InsertNextPoint(xx, yy, zz);
             //cout<<"0.2"<<endl;
             //cout<<tt<<":"<<t<<endl;
-            values->InsertNextTupleValue(t);
+            values->InsertNextTuple(t);
             //cout<<"1"<<endl;
         }
 
@@ -103,45 +128,7 @@ void ResultGrid::WriteToVTP(const std::string &quanname, const std::string &file
         double bounds[6];
         outputPolyData->GetBounds(bounds);
 
-        // Find min and max z
-        double minz = bounds[4];
-        double maxz = bounds[5];
-        //cout<<"2"<<endl;
-        // Create the color map
-        vtkSmartPointer<vtkLookupTable> colorLookupTable =
-            vtkSmartPointer<vtkLookupTable>::New();
-        colorLookupTable->SetTableRange(minz, maxz);
-        colorLookupTable->Build();
-
-        // Generate the colors for each point based on the color map
-        vtkSmartPointer<vtkUnsignedCharArray> colors_2 =
-            vtkSmartPointer<vtkUnsignedCharArray>::New();
-        colors_2->SetNumberOfComponents(3);
-        colors_2->SetName("Colors");
-
-        //cout<<"3"<<endl;
-        for (int i = 0; i < outputPolyData->GetNumberOfPoints(); i++)
-        {
-            double p[3];
-            outputPolyData->GetPoint(i, p);
-
-            double dcolor[3];
-            colorLookupTable->GetColor(p[2], dcolor);
-
-            unsigned char color[3];
-            for (unsigned int j = 0; j < 3; j++)
-            {
-                color[j] = static_cast<unsigned char>(255.0 * dcolor[j]);
-            }
-            //std::cout << "color: "
-            //	<< (int)color[0] << " "
-            //	<< (int)color[1] << " "
-            //	<< (int)color[2] << std::endl;
-
-            colors_2->InsertNextTupleValue(color);
-        }
-        //cout<<"4"<<endl;
-        outputPolyData->GetPointData()->SetScalars(values);
+                outputPolyData->GetPointData()->SetScalars(values);
 
 
         //Append the two meshes
@@ -151,14 +138,9 @@ void ResultGrid::WriteToVTP(const std::string &quanname, const std::string &file
         appendFilter->AddInputConnection(input1->GetProducerPort());
         appendFilter->AddInputConnection(input2->GetProducerPort());
     #else
-        //appendFilter->AddInputData(polydata);
-        //appendFilter->AddInputData(polydata_1);
         appendFilter->AddInputData(outputPolyData);
     #endif
         appendFilter->Update();
-        //cout<<"5"<<endl;
-
-        // Visualization
         vtkSmartPointer<vtkPolyDataMapper> mapper =
             vtkSmartPointer<vtkPolyDataMapper>::New();
     #if VTK_MAJOR_VERSION <= 5
@@ -175,13 +157,13 @@ void ResultGrid::WriteToVTP(const std::string &quanname, const std::string &file
 
         vtkSmartPointer<vtkXMLPolyDataWriter> writer =
             vtkSmartPointer<vtkXMLPolyDataWriter>::New();
-        //cout<<"6"<<endl;
+
         writer->SetFileName(filename.c_str());
         writer->SetInputData(mapper->GetInput());
-        // This is set so we can see the data in a text editor.
+
         writer->SetDataModeToAscii();
         writer->Write();
-        //cout<<"7"<<endl;
+
 
 }
 
