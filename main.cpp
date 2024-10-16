@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     mp.K_sat = 1;
     mp.alpha = 20;
     mp.n = 1.8;
-    mp.rw = 0.1;
+    mp.rw = 0.03;
     mp.theta_sat = 0.4;
     mp.theta_r = 0.05;
     mp.initial_theta = 0.2;
@@ -36,6 +36,8 @@ int main(int argc, char *argv[])
     system->SavetoScriptFile("/home/arash/Projects/DryWellModels/CreatedModel.ohq");
 
     cout<<"Solving ..."<<endl;
+    system->SetProp("tend",10);
+    system->SetProp("initial_time_step",0.1);
     system->Solve();
     cout<<"Writing outputs in '"<< system->GetWorkingFolder() + system->OutputFileName() +"'"<<endl;
     CTimeSeriesSet<double> output = system->GetOutputs();
@@ -45,6 +47,17 @@ int main(int argc, char *argv[])
     cout<<"Writing VTPs"<<endl;
     resgrid.WriteToVTP("Moisture_content",system->GetWorkingFolder()+"moisture.vtp");
 
+    vector<string> well_block; well_block.push_back("Well");
+    ResultGrid well_depth = ResultGrid(output,well_block,"depth");
+    well_depth.Sum().writefile(system->GetWorkingFolder()+"WaterDepth.csv");
+
+    vector<string> GWRechargeBlocks;
+    for (int i=0; i<mp.nr+1; i++)
+    {
+        GWRechargeBlocks.push_back(("Soil to Groundwater (" + QString::number(i) + ")").toStdString());
+    }
+    ResultGrid GW_recharge = ResultGrid(output,GWRechargeBlocks,"flow");
+    GW_recharge.Sum().writefile(system->GetWorkingFolder() + "GW_recharge.csv");
     return 0;
 
 }
