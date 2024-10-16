@@ -63,7 +63,7 @@ ResultGrid::ResultGrid(const CTimeSeriesSet<double> &cts, const string &quantity
         if (quan==quantity)
         {
             point pt;
-            if (system->block(block_name))
+            if (system->block(block_name) && system->block(block_name)->HasQuantity("act_X"))
             {
                 pt.x = system->block(block_name)->GetVal("act_X");
                 pt.y = system->block(block_name)->GetVal("act_Y");
@@ -79,7 +79,7 @@ ResultGrid::ResultGrid(const string &quantity, System *system)
 {
     for (int i=0; i<system->BlockCount(); i++)
     {
-        if (system->block(i)->HasQuantity(quantity))
+        if (system->block(i)->HasQuantity(quantity) && system->block(i)->HasQuantity("act_X"))
         {
             point pt;
             pt.x = system->block(i)->GetVal("act_X");

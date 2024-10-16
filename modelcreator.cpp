@@ -14,6 +14,18 @@ bool ModelCreator::Create(model_parameters mp, System *system)
     system->AppendQuanTemplate("/home/arash/Projects/QAquifolium/resources/unsaturated_soil.json");
     system->AppendQuanTemplate("/home/arash/Projects/QAquifolium/resources/Well.json");
     system->ReadSystemSettingsTemplate("/home/arash/Projects/QAquifolium/resources/settings.json");
+
+    if (mp.tracer)
+    {
+        Constituent C;
+        C.SetQuantities(system->GetMetaModel(), "Constituent");
+        C.SetName("Tracer");
+        C.SetType("Constituent");
+        system->AddConstituent(C,false);
+        system->AddConstituentRelatePropertiestoMetalModel();
+        system->AddConstituentRelateProperties(system->constituent("Tracer"));
+    }
+
     double dr = (mp.RadiousOfInfluence-mp.rw)/mp.nr;
     double dz = mp.DepthtoGroundWater/mp.nz;
     cout<<"Main Soil Blocks"<<endl;
@@ -158,6 +170,9 @@ bool ModelCreator::Create(model_parameters mp, System *system)
 
             system->AddLink(L, ("Soil (" + QString::number(i+1) + "$" + QString::number(j) + ")").toStdString(), ("Soil (" + QString::number(i+1) + "$" + QString::number(j+1) + ")").toStdString(), false);
         }
+
+
+
     cout<<"Well"<<endl;
     Block well;
     well.SetQuantities(system->GetMetaModel(), "Well_aggregate");
@@ -167,10 +182,12 @@ bool ModelCreator::Create(model_parameters mp, System *system)
     well.SetVal("_width",mp.rw*4000);
     well.SetVal("bottom_elevation",-mp.DepthofWell);
     well.SetVal("diameter",mp.rw*2);
-    well.SetVal("depth",0.5);
+    well.SetVal("depth",1);
     well.SetVal("porosity",1);
     well.SetVal("x",-mp.rw*4000);
     well.SetVal("y",0);
+    if (mp.tracer)
+        well.SetVal("Tracer:concentration",1);
     system->AddBlock(well,false);
     cout<<"Well to soil"<<endl;
     for (int j=0; j<mp.nz; j++)
@@ -217,6 +234,8 @@ bool ModelCreator::Create(model_parameters mp, System *system)
         system->AddLink(L, ("Soil (" + QString::number(i) + "$" + QString::number(mp.nz-1) + ")").toStdString(), "Ground Water", false);
 
     }
+
+
 
     cout<<"Populate functions"<<endl;
     system->PopulateOperatorsFunctions();

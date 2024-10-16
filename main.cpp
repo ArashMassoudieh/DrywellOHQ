@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
     mp.alpha_Ksat_Cor = 0.378;
     mp.K_sat_stdev = 0.5;
     mp.n_Ksat_Cor = 0.2;
+    mp.tracer = true;
     int i=0;
 
     string working_folder = "/home/arash/Projects/DryWellModels/";
@@ -62,9 +63,6 @@ int main(int argc, char *argv[])
         mp.property_generator = P;
     }
 
-
-
-
     System *system=new System();
     ModelCreator ModCreate;
     cout<<"Creating model ..." <<endl;
@@ -90,6 +88,13 @@ int main(int argc, char *argv[])
     cout<<"Writing VTPs"<<endl;
     resgrid.WriteToVTP("Moisture_content",system->GetWorkingFolder()+"moisture.vtp");
 
+    if (mp.tracer)
+    {   cout<<"Getting concentration results into grid"<<endl;
+        ResultGrid resgridconcentration(output,"Tracer:concentration",system);
+        cout<<"Writing VTPs"<<endl;
+        resgridconcentration.WriteToVTP("Tracer Concentration",system->GetWorkingFolder()+"tracer.vtp");
+    }
+
     vector<string> well_block; well_block.push_back("Well");
     ResultGrid well_depth = ResultGrid(output,well_block,"depth");
     well_depth.Sum().writefile(system->GetWorkingFolder()+"WaterDepth.csv");
@@ -101,6 +106,15 @@ int main(int argc, char *argv[])
     }
     ResultGrid GW_recharge = ResultGrid(output,GWRechargeBlocks,"flow");
     GW_recharge.Sum().writefile(system->GetWorkingFolder() + "GW_recharge.csv");
+
+    ResultGrid Ksat_grid = ResultGrid("K_sat_original",system);
+    Ksat_grid.WriteToVTP("K_sat",system->GetWorkingFolder()+ "K_sat.vtp",1.0/Ksat_grid.maxval());
+
+    ResultGrid alpha_grid = ResultGrid("alpha",system);
+    alpha_grid.WriteToVTP("alpha",system->GetWorkingFolder()+ "alpha.vtp",1.0/alpha_grid.maxval());
+
+    ResultGrid n_grid = ResultGrid("n",system);
+    n_grid.WriteToVTP("n",system->GetWorkingFolder()+ "n.vtp",1.0/n_grid.maxval());
     return 0;
 
 }

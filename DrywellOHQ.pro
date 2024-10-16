@@ -19,7 +19,7 @@ Arash {
     VTK_V = -9.0
 }
 
-DEFINES += use_VTK ARMA_USE_SUPERLU _arma
+DEFINES += use_VTK ARMA_USE_SUPERLU _arma #SUPER_LU
 CONFIG += use_VTK
 
 INCLUDEPATH += $$OHQPATH/include
@@ -119,6 +119,7 @@ SOURCES += \
         $$OHQPATH/src/GA/Individual.cpp \
         $$OHQPATH/src/GA/DistributionNUnif.cpp \
         $$OHQPATH/src/GA/Distribution.cpp \
+        ../QAquifolium/aquifolium/src/Matrix_arma_sp.cpp \
         ../jsoncpp/src/lib_json/json_reader.cpp \
         ../jsoncpp/src/lib_json/json_value.cpp \
         ../jsoncpp/src/lib_json/json_writer.cpp \
@@ -160,6 +161,7 @@ HEADERS += \
     $$OHQPATH/include/System.h \
     $$OHQPATH/include/Vector.h \
     $$OHQPATH/include/Vector_arma.h \
+    ../QAquifolium/aquifolium/include/Matrix_arma_sp.h \
     ../jsoncpp/include/json/allocator.h \
     ../jsoncpp/include/json/assertions.h \
     ../jsoncpp/include/json/autolink.h \

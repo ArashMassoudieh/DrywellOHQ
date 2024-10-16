@@ -25,6 +25,7 @@ struct model_parameters
     double K_sat_stdev;
     PropertyGenerator *property_generator = nullptr;
     enum class _mode {homogeneous, heterogeneous} mode;
+    bool tracer = false;
 };
 
 class ModelCreator
