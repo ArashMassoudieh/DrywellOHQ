@@ -18,7 +18,7 @@ public:
     ResultGrid(const ResultGrid&);
     virtual ~ResultGrid();
     ResultGrid& operator=(const ResultGrid&);
-    ResultGrid(const CTimeSeriesSet<double> &cts, const string &quantity, System *system);
+    ResultGrid(const CTimeSeriesSet<double> &cts, const string &quantity, System *system, bool needposition=true);
     ResultGrid(const string &quantity, System *system);
     ResultGrid(const CTimeSeriesSet<double> &cts, const vector<string> &components, const string &quantity);
     CTimeSeries<double> Sum();

@@ -4,13 +4,15 @@
 #include "modelcreator.h"
 #include "resultgrid.h"
 #include "vtk.h"
+#include <QTime>
 
 int main(int argc, char *argv[])
 {
-
+    QTime start_time = QTime::currentTime();
+    cout<<"Start time = " + start_time.toString().toStdString()<<endl;
     model_parameters mp;
-    mp.nr = 20;
-    mp.nz = 20;
+    mp.nr = 10;
+    mp.nz = 10;
     mp.K_sat = 1;
     mp.alpha = 20;
     mp.n = 1.8;
@@ -27,7 +29,7 @@ int main(int argc, char *argv[])
     int i=0;
 
     string working_folder = "/home/arash/Projects/DryWellModels/";
-    if (mp.mode == model_parameters::_mode::heterogeneous)
+    if (mp.mode == model_parameters::_mode::homogeneous)
     {
         PropertyGenerator *P = new PropertyGenerator(mp.nz,i*505);
         P->correlation_length_scale = mp.Correlation_Length_Scale;
@@ -77,8 +79,8 @@ int main(int argc, char *argv[])
     system->SavetoScriptFile(working_folder +"CreatedModel.ohq");
 
     cout<<"Solving ..."<<endl;
-    system->SetProp("tend",10);
-    system->SetProp("initial_time_step",0.1);
+    system->SetProp("tend",1);
+    system->SetProp("initial_time_step",0.01);
     system->Solve();
     cout<<"Writing outputs in '"<< system->GetWorkingFolder() + system->OutputFileName() +"'"<<endl;
     CTimeSeriesSet<double> output = system->GetOutputs();
@@ -88,16 +90,26 @@ int main(int argc, char *argv[])
     cout<<"Writing VTPs"<<endl;
     resgrid.WriteToVTP("Moisture_content",system->GetWorkingFolder()+"moisture.vtp");
 
+    cout<<"Getting storage into grid"<<endl;
+    ResultGrid resgridstorage(output,"Storage",system,false);
+    cout<<"Writing TimeSeries"<<endl;
+    resgridstorage.Sum().writefile(system->GetWorkingFolder()+"storage.csv");
+
     if (mp.tracer)
     {   cout<<"Getting concentration results into grid"<<endl;
         ResultGrid resgridconcentration(output,"Tracer:concentration",system);
         cout<<"Writing VTPs"<<endl;
         resgridconcentration.WriteToVTP("Tracer Concentration",system->GetWorkingFolder()+"tracer.vtp");
+
+        cout<<"Getting mass results into grid"<<endl;
+        ResultGrid resgridmass(output,"Tracer:mass",system, false);
+        cout<<"Writing TimeSeries"<<endl;
+        resgridmass.Sum().writefile(system->GetWorkingFolder()+"mass.csv");
     }
 
     vector<string> well_block; well_block.push_back("Well");
     ResultGrid well_depth = ResultGrid(output,well_block,"depth");
-    well_depth.Sum().writefile(system->GetWorkingFolder()+"WaterDepth.csv");
+    (well_depth.Sum()-100000.0).writefile(system->GetWorkingFolder()+"WaterDepth.csv");
 
     vector<string> GWRechargeBlocks;
     for (int i=0; i<mp.nr+1; i++)
@@ -115,6 +127,9 @@ int main(int argc, char *argv[])
 
     ResultGrid n_grid = ResultGrid("n",system);
     n_grid.WriteToVTP("n",system->GetWorkingFolder()+ "n.vtp",1.0/n_grid.maxval());
+    QTime end_time = QTime::currentTime();
+    cout<<"End time = " + end_time.toString().toStdString();
+    cout<<"Simulation Time = "<<(start_time.secsTo(end_time))/60.0<<endl;
     return 0;
 
 }

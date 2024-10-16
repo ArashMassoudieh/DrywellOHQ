@@ -54,7 +54,7 @@ CTimeSeries<double> ResultGrid::SumIntegrate()
     return Sum().integrate();
 }
 
-ResultGrid::ResultGrid(const CTimeSeriesSet<double> &cts, const string &quantity, System *system)
+ResultGrid::ResultGrid(const CTimeSeriesSet<double> &cts, const string &quantity, System *system, bool needposition)
 {
     for (int i=0; i<cts.nvars; i++)
     {
@@ -63,7 +63,7 @@ ResultGrid::ResultGrid(const CTimeSeriesSet<double> &cts, const string &quantity
         if (quan==quantity)
         {
             point pt;
-            if (system->block(block_name) && system->block(block_name)->HasQuantity("act_X"))
+            if (system->block(block_name) && (system->block(block_name)->HasQuantity("act_X") || !needposition))
             {
                 pt.x = system->block(block_name)->GetVal("act_X");
                 pt.y = system->block(block_name)->GetVal("act_Y");
