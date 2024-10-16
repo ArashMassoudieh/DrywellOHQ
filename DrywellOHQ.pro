@@ -19,7 +19,7 @@ Arash {
     VTK_V = -9.0
 }
 
-DEFINES += use_VTK ARMA_USE_SUPERLU
+DEFINES += use_VTK ARMA_USE_SUPERLU _arma
 CONFIG += use_VTK
 
 INCLUDEPATH += $$OHQPATH/include
@@ -124,6 +124,7 @@ SOURCES += \
         ../jsoncpp/src/lib_json/json_writer.cpp \
         main.cpp \
         modelcreator.cpp \
+        propertygenerator.cpp \
         resultgrid.cpp
 
 HEADERS += \
@@ -187,6 +188,7 @@ HEADERS += \
     $$OHQPATH/src/BTCSet.hpp \
     $$OHQPATH/include/reaction.h \
     modelcreator.h \
+    propertygenerator.h \
     resultgrid.h
 
 

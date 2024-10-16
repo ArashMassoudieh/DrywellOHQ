@@ -1,6 +1,8 @@
 #ifndef MODELCREATOR_H
 #define MODELCREATOR_H
 
+#include "propertygenerator.h"
+
 class System;
 
 struct model_parameters
@@ -17,6 +19,12 @@ struct model_parameters
     double theta_sat;
     double theta_r;
     double initial_theta;
+    double Correlation_Length_Scale;
+    double alpha_Ksat_Cor;
+    double n_Ksat_Cor;
+    double K_sat_stdev;
+    PropertyGenerator *property_generator = nullptr;
+    enum class _mode {homogeneous, heterogeneous} mode;
 };
 
 class ModelCreator

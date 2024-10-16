@@ -74,6 +74,23 @@ ResultGrid::ResultGrid(const CTimeSeriesSet<double> &cts, const string &quantity
     }
 }
 
+ResultGrid::ResultGrid(const string &quantity, System *system)
+{
+    for (int i=0; i<system->BlockCount(); i++)
+    {
+        if (system->block(i)->HasQuantity(quantity))
+        {
+            point pt;
+            pt.x = system->block(i)->GetVal("act_X");
+            pt.y = system->block(i)->GetVal("act_Y");
+            Positions.push_back(pt);
+            CTimeSeries<double> value;
+            value.append(0,system->block(i)->GetVal(quantity));
+            append(value,system->block(i)->GetName());
+        }
+    }
+}
+
 #ifdef use_VTK
 void ResultGrid::WriteToVTP(const std::string &quanname, const std::string &filename, int i, const double &scale) const
 {

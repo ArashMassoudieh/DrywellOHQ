@@ -28,8 +28,17 @@ bool ModelCreator::Create(model_parameters mp, System *system)
 
             B.SetName(("Soil (" + QString::number(i+1) + "$" + QString::number(j) + ")").toStdString());
             B.SetType("Soil");
-            B.SetVal("K_sat_original",mp.K_sat);
-            B.SetVal("alpha",mp.alpha);
+            if (mp.property_generator && mp.mode == model_parameters::_mode::heterogeneous)
+            {   B.SetVal("K_sat_original",mp.property_generator->val("K_sat",j));
+                B.SetVal("alpha",mp.property_generator->val("alpha",j));
+                B.SetVal("n",mp.property_generator->val("n",j));
+            }
+            else
+            {   B.SetVal("K_sat_original",mp.K_sat);
+                B.SetVal("alpha",mp.alpha);
+                B.SetVal("n",mp.n);
+            }
+
             B.SetVal("area",area);
             B.SetVal("_width",dr*3000);
             B.SetVal("_height",dr*3000);
@@ -56,8 +65,16 @@ bool ModelCreator::Create(model_parameters mp, System *system)
 
             B.SetName(("Soil (" + QString::number(0) + "$" + QString::number(j) + ")").toStdString());
             B.SetType("Soil");
-            B.SetVal("K_sat_original",mp.K_sat);
-            B.SetVal("alpha",mp.alpha);
+            if (mp.property_generator && mp.mode == model_parameters::_mode::heterogeneous)
+            {   B.SetVal("K_sat_original",mp.property_generator->val("K_sat",j));
+                B.SetVal("alpha",mp.property_generator->val("alpha",j));
+                B.SetVal("n",mp.property_generator->val("n",j));
+            }
+            else
+            {   B.SetVal("K_sat_original",mp.K_sat);
+                B.SetVal("alpha",mp.alpha);
+                B.SetVal("n",mp.n);
+            }
             B.SetVal("area",area);
             B.SetVal("_width",dr*3000);
             B.SetVal("_height",dr*3000);
