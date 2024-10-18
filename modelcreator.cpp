@@ -182,13 +182,17 @@ bool ModelCreator::Create(model_parameters mp, System *system)
     well.SetVal("_width",mp.rw*4000);
     well.SetVal("bottom_elevation",-mp.DepthofWell);
     well.SetVal("diameter",mp.rw*2);
-    well.SetVal("depth",1);
+    well.SetVal("depth",mp.initial_water_depth);
     well.SetVal("porosity",1);
     well.SetVal("x",-mp.rw*4000);
     well.SetVal("y",0);
     if (mp.tracer)
-        well.SetVal("Tracer:concentration",1);
+        well.SetVal("Tracer:concentration",mp.initial_concentration);
+    CTimeSeries<double> inflow = CTimeSeries<double>();
+    inflow.CreatePeriodicStepFunction(0,mp.t_end,0.5,1.5,0.5);
+    well.Variable("inflow")->SetTimeSeries(inflow);
     system->AddBlock(well,false);
+
     cout<<"Well to soil"<<endl;
     for (int j=0; j<mp.nz; j++)
     {
@@ -213,7 +217,7 @@ bool ModelCreator::Create(model_parameters mp, System *system)
     cout<<"Groundwater"<<endl;
     Block gw;
     gw.SetQuantities(system->GetMetaModel(), "fixed_head");
-    gw.SetName("Ground Water");
+    gw.SetName("Groundwater");
     gw.SetType("fixed_head");
     gw.SetVal("_height",200);
     gw.SetVal("_width",mp.RadiousOfInfluence*4000);
@@ -231,11 +235,9 @@ bool ModelCreator::Create(model_parameters mp, System *system)
         L.SetName(("Soil to Groundwater (" + QString::number(i) + ")").toStdString());
         L.SetType("soil_to_fixedhead_link");
 
-        system->AddLink(L, ("Soil (" + QString::number(i) + "$" + QString::number(mp.nz-1) + ")").toStdString(), "Ground Water", false);
+        system->AddLink(L, ("Soil (" + QString::number(i) + "$" + QString::number(mp.nz-1) + ")").toStdString(), "Groundwater", false);
 
     }
-
-
 
     cout<<"Populate functions"<<endl;
     system->PopulateOperatorsFunctions();

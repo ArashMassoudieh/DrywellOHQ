@@ -26,6 +26,10 @@ struct model_parameters
     PropertyGenerator *property_generator = nullptr;
     enum class _mode {homogeneous, heterogeneous} mode;
     bool tracer = false;
+    double initial_concentration = 1;
+    double initial_water_depth = 1;
+    double t_end = 10;
+    double dt0 = 0.01;
 };
 
 class ModelCreator

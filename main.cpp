@@ -11,8 +11,8 @@ int main(int argc, char *argv[])
     QTime start_time = QTime::currentTime();
     cout<<"Start time = " + start_time.toString().toStdString()<<endl;
     model_parameters mp;
-    mp.nr = 10;
-    mp.nz = 10;
+    mp.nr = 20;
+    mp.nz = 20;
     mp.K_sat = 1;
     mp.alpha = 20;
     mp.n = 1.8;
@@ -26,10 +26,12 @@ int main(int argc, char *argv[])
     mp.K_sat_stdev = 0.5;
     mp.n_Ksat_Cor = 0.2;
     mp.tracer = true;
+    mp.t_end = 30;
+    mp.dt0 = 0.1;
     int i=0;
 
     string working_folder = "/home/arash/Projects/DryWellModels/";
-    if (mp.mode == model_parameters::_mode::homogeneous)
+    if (mp.mode == model_parameters::_mode::heterogeneous)
     {
         PropertyGenerator *P = new PropertyGenerator(mp.nz,i*505);
         P->correlation_length_scale = mp.Correlation_Length_Scale;
@@ -79,8 +81,8 @@ int main(int argc, char *argv[])
     system->SavetoScriptFile(working_folder +"CreatedModel.ohq");
 
     cout<<"Solving ..."<<endl;
-    system->SetProp("tend",1);
-    system->SetProp("initial_time_step",0.01);
+    system->SetProp("tend",mp.t_end);
+    system->SetProp("initial_time_step",mp.dt0);
     system->Solve();
     cout<<"Writing outputs in '"<< system->GetWorkingFolder() + system->OutputFileName() +"'"<<endl;
     CTimeSeriesSet<double> output = system->GetOutputs();
@@ -93,7 +95,7 @@ int main(int argc, char *argv[])
     cout<<"Getting storage into grid"<<endl;
     ResultGrid resgridstorage(output,"Storage",system,false);
     cout<<"Writing TimeSeries"<<endl;
-    resgridstorage.Sum().writefile(system->GetWorkingFolder()+"storage.csv");
+    (resgridstorage.Sum()-100000).writefile(system->GetWorkingFolder()+"storage.csv");
 
     if (mp.tracer)
     {   cout<<"Getting concentration results into grid"<<endl;
@@ -109,7 +111,7 @@ int main(int argc, char *argv[])
 
     vector<string> well_block; well_block.push_back("Well");
     ResultGrid well_depth = ResultGrid(output,well_block,"depth");
-    (well_depth.Sum()-100000.0).writefile(system->GetWorkingFolder()+"WaterDepth.csv");
+    well_depth.Sum().writefile(system->GetWorkingFolder()+"WaterDepth.csv");
 
     vector<string> GWRechargeBlocks;
     for (int i=0; i<mp.nr+1; i++)
@@ -119,6 +121,24 @@ int main(int argc, char *argv[])
     ResultGrid GW_recharge = ResultGrid(output,GWRechargeBlocks,"flow");
     GW_recharge.Sum().writefile(system->GetWorkingFolder() + "GW_recharge.csv");
 
+
+    vector<string> InfiltrationBlocks;
+    for (int i=0; i<mp.nz; i++)
+    {
+        if (i*mp.DepthtoGroundWater/mp.nz<mp.DepthofWell)
+        InfiltrationBlocks.push_back(("Well to Soil (" + QString::number(i) + ")").toStdString());
+    }
+    InfiltrationBlocks.push_back("Well_to_bottom");
+    ResultGrid infiltration_resgrid = ResultGrid(output,InfiltrationBlocks,"flow");
+    infiltration_resgrid.Sum().writefile(system->GetWorkingFolder() + "Infiltration.csv");
+
+    vector<string> InflowBlock;
+    InflowBlock.push_back("Well");
+    ResultGrid inflow_resgrid = ResultGrid(output,InfiltrationBlocks,"inflow");
+    infiltration_resgrid.Sum().writefile(system->GetWorkingFolder() + "Inflow.csv");
+
+
+
     ResultGrid Ksat_grid = ResultGrid("K_sat_original",system);
     Ksat_grid.WriteToVTP("K_sat",system->GetWorkingFolder()+ "K_sat.vtp",1.0/Ksat_grid.maxval());
 
@@ -127,6 +147,16 @@ int main(int argc, char *argv[])
 
     ResultGrid n_grid = ResultGrid("n",system);
     n_grid.WriteToVTP("n",system->GetWorkingFolder()+ "n.vtp",1.0/n_grid.maxval());
+
+
+    vector<string> TTD_blocks;
+    TTD_blocks.push_back("Groundwater");
+
+    ResultGrid TTD = ResultGrid(output,TTD_blocks,"Tracer:mass");
+    (TTD.Sum()/(mp.DepthofWell*mp.rw*mp.rw*3.141521*mp.initial_concentration*mp.initial_water_depth)).writefile(system->GetWorkingFolder() + "TTD_Cum.csv");
+
+    (TTD.Sum()/(mp.DepthofWell*mp.rw*mp.rw*3.141521*mp.initial_concentration*mp.initial_water_depth)).derivative().writefile(system->GetWorkingFolder() + "TTD.csv");
+
     QTime end_time = QTime::currentTime();
     cout<<"End time = " + end_time.toString().toStdString();
     cout<<"Simulation Time = "<<(start_time.secsTo(end_time))/60.0<<endl;
