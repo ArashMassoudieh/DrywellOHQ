@@ -11,8 +11,8 @@ int main(int argc, char *argv[])
     QTime start_time = QTime::currentTime();
     cout<<"Start time = " + start_time.toString().toStdString()<<endl;
     model_parameters mp;
-    mp.nr = 20;
-    mp.nz = 20;
+    mp.nr = 6;
+    mp.nz = 6;
     mp.K_sat = 1;
     mp.alpha = 20;
     mp.n = 1.8;
@@ -78,6 +78,8 @@ int main(int argc, char *argv[])
     cout<<"Saving"<<endl;
     system->SetProp("tend",10);
     system->SetProp("initial_time_step",0.1);
+    system->block("Well")->Variable("inflow")->TimeSeries()->writefile(working_folder + "inflow.csv");
+    system->block("Well")->Variable("inflow")->TimeSeries()->filename = working_folder + "inflow.csv";
     system->SavetoScriptFile(working_folder +"CreatedModel.ohq");
 
     cout<<"Solving ..."<<endl;

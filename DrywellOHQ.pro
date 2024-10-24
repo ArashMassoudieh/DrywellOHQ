@@ -64,7 +64,7 @@ CONFIG(debug, debug|release) {
     !macx: QMAKE_LFLAGS +=  -fopenmp
     !macx: LIBS += -lgomp -lpthread
     LIBS += -lpthread
-    DEFINES += NO_OPENMP DEBUG
+    DEFINES += NO_OPENMP #DEBUG
 
 } else {
     message(Building in release mode)
