@@ -17,6 +17,10 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 #include <vtkActor.h>
 #include <vtkRenderer.h>
 #include <vtkXMLImageDataWriter.h>
+#include <vtkDelaunay2D.h>
+#include <vtkSmartPointer.h>
+#include <vtkProperty.h>
+#include <vtkXMLPolyDataWriter.h>
 
 #include "vtkPolyDataMapper.h"
 #include "vtkActor.h"

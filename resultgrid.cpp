@@ -5,6 +5,7 @@
 #include <System.h>
 #include "vtk.h"
 
+
 using namespace std;
 
 ResultGrid::ResultGrid():CTimeSeriesSet<double>()

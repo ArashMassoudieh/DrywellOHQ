@@ -196,7 +196,7 @@ bool ModelCreator::Create(model_parameters mp, System *system)
         well.SetVal("Tracer:concentration",mp.initial_concentration);
     CTimeSeries<double> inflow = CTimeSeries<double>();
     inflow.CreatePeriodicStepFunction(0,mp.t_end,0.5,1.5,0.5);
-    //well.Variable("inflow")->SetTimeSeries(inflow);
+    well.Variable("inflow")->SetTimeSeries(inflow);
     system->AddBlock(well,false);
 
     cout<<"Well to soil"<<endl;
