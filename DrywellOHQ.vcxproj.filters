@@ -155,6 +155,9 @@
     <ClCompile Include="propertygenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="resultgrid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\OpenHydroQual\aquifolium\src\BTC.hpp">
@@ -167,6 +170,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="propertygenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resultgrid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

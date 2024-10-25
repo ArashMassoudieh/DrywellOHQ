@@ -2,8 +2,8 @@
 #include "Script.h"
 #include "qfileinfo.h"
 #include "modelcreator.h"
-//#include "resultgrid.h"
-//#include "vtk.h"
+#include "resultgrid.h"
+#include "vtk.h"
 #include <QTime>
 
 int main(int argc, char *argv[])
@@ -88,8 +88,8 @@ int main(int argc, char *argv[])
     CTimeSeriesSet<double> output = system->GetOutputs();
     output.writetofile(system->GetWorkingFolder() + system->OutputFileName());
     cout<<"Getting results into grid"<<endl;
-    //ResultGrid resgrid(output,"theta",system);
-    /*
+    ResultGrid resgrid(output,"theta",system);
+    
     cout<<"Writing VTPs"<<endl;
     resgrid.WriteToVTP("Moisture_content",system->GetWorkingFolder()+"moisture.vtp");
 
@@ -157,7 +157,7 @@ int main(int argc, char *argv[])
     (TTD.Sum()/(mp.DepthofWell*mp.rw*mp.rw*3.141521*mp.initial_concentration*mp.initial_water_depth)).writefile(system->GetWorkingFolder() + "TTD_Cum.csv");
 
     (TTD.Sum()/(mp.DepthofWell*mp.rw*mp.rw*3.141521*mp.initial_concentration*mp.initial_water_depth)).derivative().writefile(system->GetWorkingFolder() + "TTD.csv");
-    */
+    
     QTime end_time = QTime::currentTime();
     cout<<"End time = " + end_time.toString().toStdString();
     cout<<"Simulation Time = "<<(start_time.secsTo(end_time))/60.0<<endl;

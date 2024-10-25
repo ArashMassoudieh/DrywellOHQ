@@ -10,11 +10,17 @@ ModelCreator::ModelCreator()
 
 bool ModelCreator::Create(model_parameters mp, System *system)
 {
+#ifdef _windows
+    system->GetQuanTemplate("C:/Projects/OpenHydroQual/resources/main_components.json");
+    system->AppendQuanTemplate("C:/Projects/OpenHydroQual/resources/unsaturated_soil.json");
+    system->AppendQuanTemplate("C:/Projects/OpenHydroQual/resources/Well.json");
+    system->ReadSystemSettingsTemplate("C:/Projects/OpenHydroQual/resources/settings.json");
+#else
     system->GetQuanTemplate("/home/arash/Projects/QAquifolium/resources/main_components.json");
     system->AppendQuanTemplate("/home/arash/Projects/QAquifolium/resources/unsaturated_soil.json");
     system->AppendQuanTemplate("/home/arash/Projects/QAquifolium/resources/Well.json");
     system->ReadSystemSettingsTemplate("/home/arash/Projects/QAquifolium/resources/settings.json");
-
+#endif
     if (mp.tracer)
     {
         Constituent C;
