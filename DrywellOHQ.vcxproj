@@ -61,7 +61,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>C:\Projects\VTK-9.4.0\Build\Common\Transforms;C:\Projects\VTK-9.4.0\Common\Transforms;C:\Projects\VTK-9.4.0\Build\IO\XML;C:\Projects\VTK-9.4.0\Build\Common\ExecutionModel;C:\Projects\VTK-9.4.0\Common\ExecutionModel;C:\Projects\VTK-9.4.0\ThirdParty\nlohmannjson;C:\Projects\VTK-9.4.0\Build\ThirdParty\nlohmannjson;C:\Projects\VTK-9.4.0\Build\Common\DataModel;C:\Projects\VTK-9.4.0\Build\Filters\Core;C:\Projects\VTK-9.4.0\Build\Rendering\Core;C:\Projects\VTK-9.4.0\Build\Utilities\KWSys;C:\Projects\VTK-9.4.0\Utilities\KWIML;C:\Projects\VTK-9.4.0\Build\Common\Core;C:\Projects\VTK-9.4.0\Filters\Core;C:\Projects\VTK-9.4.0\IO\XML;C:\Projects\VTK-9.4.0\Common\DataModel;C:\Projects\VTK-9.4.0\Rendering\Core;C:\Projects\VTK-9.4.0\Common\Core;..\jsoncpp\include;..\OpenHydroQual\aquifolium\include\GA;..\armadillo\armadillo-header;..\OpenHydroQual\aquifolium\src;..\OpenHydroQual\aquifolium\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_arma;ARMA_USE_LAPACK;ARMA_USE_BLAS;_windows;use_VTK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_arma;ARMA_USE_LAPACK;ARMA_USE_BLAS;_windows;use_VTK;Terminal_version;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Projects\VTK-9.4.0\Build\lib\Release;..\armadillo\lapack-blas_lib_win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -76,7 +76,7 @@ copy "..\VTK-9.4.0\Build\bin\Release\*.dll" $(SolutionDir)$(Platform)\$(Configur
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>C:\Projects\VTK-9.4.0\Build\Common\Transforms;C:\Projects\VTK-9.4.0\Common\Transforms;C:\Projects\VTK-9.4.0\Build\IO\XML;C:\Projects\VTK-9.4.0\Build\Common\ExecutionModel;C:\Projects\VTK-9.4.0\Common\ExecutionModel;C:\Projects\VTK-9.4.0\ThirdParty\nlohmannjson;C:\Projects\VTK-9.4.0\Build\ThirdParty\nlohmannjson;C:\Projects\VTK-9.4.0\Build\Common\DataModel;C:\Projects\VTK-9.4.0\Build\Filters\Core;C:\Projects\VTK-9.4.0\Build\Rendering\Core;C:\Projects\VTK-9.4.0\Build\Utilities\KWSys;C:\Projects\VTK-9.4.0\Utilities\KWIML;C:\Projects\VTK-9.4.0\Build\Common\Core;C:\Projects\VTK-9.4.0\Filters\Core;C:\Projects\VTK-9.4.0\IO\XML;C:\Projects\VTK-9.4.0\Common\DataModel;C:\Projects\VTK-9.4.0\Rendering\Core;C:\Projects\VTK-9.4.0\Common\Core;..\jsoncpp\include;..\OpenHydroQual\aquifolium\include\GA;..\armadillo\armadillo-header;..\OpenHydroQual\aquifolium\src;..\OpenHydroQual\aquifolium\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_arma;ARMA_USE_LAPACK;ARMA_USE_BLAS;_windows;use_VTK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_arma;ARMA_USE_LAPACK;ARMA_USE_BLAS;_windows;use_VTK;Terminal_version;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Projects\VTK-9.4.0\Build\lib\Release;..\armadillo\lapack-blas_lib_win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

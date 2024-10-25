@@ -11,8 +11,8 @@ int main(int argc, char *argv[])
     QTime start_time = QTime::currentTime();
     cout<<"Start time = " + start_time.toString().toStdString()<<endl;
     model_parameters mp;
-    mp.nr = 6;
-    mp.nz = 6;
+    mp.nr = 20;
+    mp.nz = 20;
     mp.K_sat = 1;
     mp.alpha = 20;
     mp.n = 1.8;
