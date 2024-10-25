@@ -28,8 +28,8 @@ bool ModelCreator::Create(model_parameters mp, System *system)
         C.SetName("Tracer");
         C.SetType("Constituent");
         system->AddConstituent(C,false);
-        system->AddConstituentRelatePropertiestoMetalModel();
-        system->AddConstituentRelateProperties(system->constituent("Tracer"));
+        //system->AddConstituentRelatePropertiestoMetalModel();
+        //system->AddConstituentRelateProperties(system->constituent("Tracer"));
     }
 
     double dr = (mp.RadiousOfInfluence-mp.rw)/mp.nr;
