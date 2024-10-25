@@ -2,8 +2,8 @@
 #include "Script.h"
 #include "qfileinfo.h"
 #include "modelcreator.h"
-#include "resultgrid.h"
-#include "vtk.h"
+//#include "resultgrid.h"
+//#include "vtk.h"
 #include <QTime>
 
 int main(int argc, char *argv[])
@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     mp.theta_sat = 0.4;
     mp.theta_r = 0.05;
     mp.initial_theta = 0.2;
-    mp.mode = model_parameters::_mode::heterogeneous;
+    mp.mode = model_parameters::_mode::homogeneous;
     mp.Correlation_Length_Scale = 1;
     mp.alpha_Ksat_Cor = 0.378;
     mp.K_sat_stdev = 0.5;
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     mp.dt0 = 0.1;
     int i=0;
 
-    string working_folder = "/home/arash/Projects/DryWellModels/";
+    string working_folder = "C:/Projects/DryWellModels/";
     if (mp.mode == model_parameters::_mode::heterogeneous)
     {
         PropertyGenerator *P = new PropertyGenerator(mp.nz,i*505);
@@ -78,6 +78,8 @@ int main(int argc, char *argv[])
     cout<<"Saving"<<endl;
     system->SetProp("tend",10);
     system->SetProp("initial_time_step",0.1);
+    system->block("Well")->Variable("inflow")->TimeSeries()->writefile(working_folder + "inflow.csv");
+    system->block("Well")->Variable("inflow")->TimeSeries()->filename = working_folder + "inflow.csv";
     system->SavetoScriptFile(working_folder +"CreatedModel.ohq");
 
     cout<<"Solving ..."<<endl;
@@ -88,7 +90,8 @@ int main(int argc, char *argv[])
     CTimeSeriesSet<double> output = system->GetOutputs();
     output.writetofile(system->GetWorkingFolder() + system->OutputFileName());
     cout<<"Getting results into grid"<<endl;
-    ResultGrid resgrid(output,"theta",system);
+    //ResultGrid resgrid(output,"theta",system);
+    /*
     cout<<"Writing VTPs"<<endl;
     resgrid.WriteToVTP("Moisture_content",system->GetWorkingFolder()+"moisture.vtp");
 
@@ -156,7 +159,7 @@ int main(int argc, char *argv[])
     (TTD.Sum()/(mp.DepthofWell*mp.rw*mp.rw*3.141521*mp.initial_concentration*mp.initial_water_depth)).writefile(system->GetWorkingFolder() + "TTD_Cum.csv");
 
     (TTD.Sum()/(mp.DepthofWell*mp.rw*mp.rw*3.141521*mp.initial_concentration*mp.initial_water_depth)).derivative().writefile(system->GetWorkingFolder() + "TTD.csv");
-
+    */
     QTime end_time = QTime::currentTime();
     cout<<"End time = " + end_time.toString().toStdString();
     cout<<"Simulation Time = "<<(start_time.secsTo(end_time))/60.0<<endl;
