@@ -65,6 +65,7 @@ public:
     void SetCorr(params, const double &value);
     void Populate_Alpha_n_normal_scores(params p);
     void Normalize(const std::string &quan, const double &denominator);
+    bool Generate(ModelParameters* mp);
 private:
     CMatrix K_alpha_n_corr_matrix;
     double K_sat_normal_score_mean;

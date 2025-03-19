@@ -2,41 +2,16 @@
 #define MODELCREATOR_H
 
 #include "propertygenerator.h"
+#include "ModelParameters.h"
 
 class System;
 
-struct model_parameters
-{
-    double DepthtoGroundWater = 2;
-    double DepthofWell = 1;
-    double RadiousOfInfluence = 1.5;
-    int nr = 10;
-    int nz = 10;
-    double K_sat;
-    double alpha;
-    double n;
-    double rw;
-    double theta_sat;
-    double theta_r;
-    double initial_theta;
-    double Correlation_Length_Scale;
-    double alpha_Ksat_Cor;
-    double n_Ksat_Cor;
-    double K_sat_stdev;
-    PropertyGenerator *property_generator = nullptr;
-    enum class _mode {homogeneous, heterogeneous} mode;
-    bool tracer = false;
-    double initial_concentration = 1;
-    double initial_water_depth = 1;
-    double t_end = 10;
-    double dt0 = 0.01;
-};
 
 class ModelCreator
 {
 public:
     ModelCreator();
-    bool Create(model_parameters mp, System *system);
+    bool Create(ModelParameters mp, System *system);
 
 private:
     const double pi = 3.141521;

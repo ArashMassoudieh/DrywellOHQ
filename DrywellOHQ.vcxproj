@@ -156,6 +156,7 @@ copy "..\VTK-9.4.0\Build\bin\Release\*.dll" $(SolutionDir)$(Platform)\$(Configur
     <ClCompile Include="..\OpenHydroQual\aquifolium\src\Vector_arma.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="modelcreator.cpp" />
+    <ClCompile Include="ModelParameters.cpp" />
     <ClCompile Include="propertygenerator.cpp" />
     <ClCompile Include="resultgrid.cpp" />
   </ItemGroup>
@@ -163,6 +164,7 @@ copy "..\VTK-9.4.0\Build\bin\Release\*.dll" $(SolutionDir)$(Platform)\$(Configur
     <ClInclude Include="..\OpenHydroQual\aquifolium\src\BTC.hpp" />
     <ClInclude Include="..\OpenHydroQual\aquifolium\src\BTCSet.hpp" />
     <ClInclude Include="modelcreator.h" />
+    <ClInclude Include="ModelParameters.h" />
     <ClInclude Include="propertygenerator.h" />
     <ClInclude Include="resultgrid.h" />
   </ItemGroup>
