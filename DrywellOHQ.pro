@@ -19,7 +19,7 @@ Arash {
     VTK_V = -9.0
 }
 
-DEFINES += use_VTK ARMA_USE_SUPERLU _arma #SUPER_LU
+DEFINES += use_VTK ARMA_USE_SUPERLU _arma GSL #SUPER_LU
 CONFIG += use_VTK
 
 INCLUDEPATH += $$OHQPATH/include
@@ -123,6 +123,7 @@ SOURCES += \
         ../jsoncpp/src/lib_json/json_reader.cpp \
         ../jsoncpp/src/lib_json/json_value.cpp \
         ../jsoncpp/src/lib_json/json_writer.cpp \
+        ModelParameters.cpp \
         main.cpp \
         modelcreator.cpp \
         propertygenerator.cpp \
@@ -189,6 +190,7 @@ HEADERS += \
     $$OHQPATH/src/BTC.hpp \
     $$OHQPATH/src/BTCSet.hpp \
     $$OHQPATH/include/reaction.h \
+    ModelParameters.h \
     modelcreator.h \
     propertygenerator.h \
     resultgrid.h

@@ -2,6 +2,7 @@
 #include "System.h"
 #include "QString"
 #include <QDir>
+#include <QDebug>
 
 ModelCreator::ModelCreator()
 {

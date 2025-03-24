@@ -3,7 +3,7 @@
 
 #include <QString>
 #include <unordered_map>
-#include "PropertyGenerator.h"
+#include "propertygenerator.h"
 #include "BTC.h"
 
 

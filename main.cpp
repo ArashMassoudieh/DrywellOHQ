@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     mp.SetTracer(true);
     mp.SetValue("t_end" , 1);
     mp.SetValue("dt0" , 0.01);
-    mp.SetWorkingfolder("C:/Projects/DryWellModels/Heterogeneous");
+    mp.SetWorkingfolder("/home/arash/Projects/DryWellModels/Heterogeneous");
     mp.SetMarginalCDF("K_sat", mp.Workingfolder() + "/K_sat_Marginal_Distribution.csv");
     mp.SetMarginalCDF("alpha", mp.Workingfolder() + "/alpha_Marginal_Distribution.csv");
     mp.SetMarginalCDF("n", mp.Workingfolder() + "/n_Marginal_Distribution.csv");
