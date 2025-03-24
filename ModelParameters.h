@@ -8,7 +8,7 @@
 
 
 enum class Mode { homogeneous, heterogeneous };
-
+enum class FlowMode {custom, no_flow, periodic };
 class ModelParameters {
 public:
     // Default Constructor
@@ -27,12 +27,16 @@ public:
     bool SetValue(const QString& parameterName, const double& value);
     double GetValue(const QString& parameterName) const;
     void SetTracer(bool val) { tracer = val; }
-    void SetWorkingfolder(QString & val) { workingfolder = val; }
+    void SetWorkingfolder(const QString & val) { workingfolder = val; }
+    void SetOutputfolder(const QString& val) { outputFolder = val; }
+    QString Outputfolder() { return outputFolder; }
     void SetMode(Mode val) { mode = val; }
+    void SetInflowMode(FlowMode val) { flowmode = val; }
     bool SetMarginalCDF(const QString& parameterName, const QString& filePath);
     bool Tracer() { return tracer; }
     QString Workingfolder() { return workingfolder; }
     Mode GetMode() { return mode; }
+    FlowMode GetInflowMode() { return flowmode; }
     CTimeSeries<double> MarginalCDF(const QString& parameterName)
     {
         if (parameterName == "K_sat") {
@@ -75,9 +79,12 @@ private:
     double alpha_Ksat_Cor;
     double n_Ksat_Cor;
     double K_sat_stdev;
+    double inflow_duration; 
+    double inflow_gap; 
+    double inflow_magnitude; 
     
     Mode mode; 
-
+    FlowMode flowmode; 
     bool tracer = false;
     double initial_concentration = 1;
     double initial_water_depth = 1;
@@ -87,6 +94,7 @@ private:
     CTimeSeries<double> K_sat_marginal_CDF;
     CTimeSeries<double> alpha_marginal_CDF;
     CTimeSeries<double> n_marginal_CDF;
+    QString outputFolder;
 };
 
 #endif // MODELPARAMETERS_H

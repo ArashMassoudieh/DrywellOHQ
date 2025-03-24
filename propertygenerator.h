@@ -6,8 +6,12 @@
 #include <Vector.h>
 #include <gsl/gsl_rng.h>
 #include "BTC.h"
+#include <QString> 
+
 
 //using namespace std;
+
+class ModelParameters; 
 
 struct correl_mat_vec
 {
@@ -66,6 +70,7 @@ public:
     void Populate_Alpha_n_normal_scores(params p);
     void Normalize(const std::string &quan, const double &denominator);
     bool Generate(ModelParameters* mp);
+    void SetWorkingFolder(const string& path) { working_folder = path; }
 private:
     CMatrix K_alpha_n_corr_matrix;
     double K_sat_normal_score_mean;
@@ -81,6 +86,7 @@ private:
     double K_sat_n_correlation = 1;
     const gsl_rng_type * T;
     gsl_rng * r = gsl_rng_alloc (gsl_rng_taus);
+    string working_folder;
 
 };
 

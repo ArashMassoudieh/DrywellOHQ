@@ -31,7 +31,9 @@ ModelParameters::ModelParameters(const ModelParameters& other)
     workingfolder(other.workingfolder),
     K_sat_marginal_CDF(other.K_sat_marginal_CDF),
     alpha_marginal_CDF(other.alpha_marginal_CDF),
-    n_marginal_CDF(other.n_marginal_CDF)
+    n_marginal_CDF(other.n_marginal_CDF),
+    flowmode(other.flowmode),
+    outputFolder(other.outputFolder)
 {
     if (other.property_generator) {
         property_generator = new PropertyGenerator(*other.property_generator);
@@ -69,6 +71,8 @@ ModelParameters& ModelParameters::operator=(const ModelParameters& other) {
     K_sat_marginal_CDF = other.K_sat_marginal_CDF;
     alpha_marginal_CDF = other.alpha_marginal_CDF;
     n_marginal_CDF = other.n_marginal_CDF;
+    flowmode = other.flowmode;
+    outputFolder = other.outputFolder;
 
     // Deep copy of property_generator
     if (property_generator) {
@@ -104,7 +108,10 @@ bool ModelParameters::SetValue(const QString& parameterName, const double& value
         {"initial_concentration", &initial_concentration},
         {"initial_water_depth", &initial_water_depth},
         {"t_end", &t_end},
-        {"dt0", &dt0}
+        {"dt0", &dt0},
+        {"inflow_duration",&inflow_duration},
+        {"inflow_gap",&inflow_gap},
+        {"inflow_magnitude",&inflow_magnitude}
     };
 
     if (parameterMap.contains(parameterName)) {
@@ -135,7 +142,10 @@ double ModelParameters::GetValue(const QString& parameterName) const {
         {"initial_concentration", &initial_concentration},
         {"initial_water_depth", &initial_water_depth},
         {"t_end", &t_end},
-        {"dt0", &dt0}
+        {"dt0", &dt0},
+        {"inflow_duration",&inflow_duration},
+        {"inflow_gap",&inflow_gap},
+        {"inflow_magnitude",&inflow_magnitude}
     };
 
     if (parameterMap.contains(parameterName)) {

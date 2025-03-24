@@ -166,36 +166,35 @@ void PropertyGenerator::Normalize(const std::string &quan,const double &denomina
 
 bool PropertyGenerator::Generate(ModelParameters* mp)
 {
-    P->correlation_length_scale = mp.Correlation_Length_Scale;
-    P->dx = mp.DepthtoGroundWater / mp.nz;
-    P->assign_K_gauss(); // Assigns normal scores for K_sat
-    P->Normalize_Ksat_normal_scores(0, mp.K_sat_stdev);
-    P->write("K_sat_normal_score", working_folder + "K_sat_score_1.txt");
+    correlation_length_scale = mp->GetValue("Correlation_Length_Scale");
+    dx = mp->GetValue("DepthtoGroundWater") / mp->GridSize("z");
+    
+    assign_K_gauss(); // Assigns normal scores for K_sat
+    Normalize_Ksat_normal_scores(0, mp->GetValue("K_sat_stdev"));
+    write("K_sat_normal_score", working_folder + "K_sat_score_1.txt");
 
-    CTimeSeries<double> K_sat_marginal_CDF(working_folder + "K_sat_Marginal_Distribution.csv"); // Loading Cummulative Distributions
-    CTimeSeries<double> alpha_marginal_CDF(working_folder + "alpha_Marginal_Distribution.csv");
-    CTimeSeries<double> n_marginal_CDF(working_folder + "n_Marginal_Distribution.csv");
-    P->SetCorr(params::alpha, mp.alpha_Ksat_Cor); //Correlation between alpha and K_sat normal scores
-    P->SetCorr(params::n, mp.n_Ksat_Cor); //Correlation between n and K_sat normal scores
+    SetCorr(params::alpha, mp->GetValue("alpha_Ksat_Cor")); //Correlation between alpha and K_sat normal scores
+    SetCorr(params::n, mp->GetValue("n_Ksat_Cor")); //Correlation between n and K_sat normal scores
 
-    P->SetMarginalDistribution("K_sat", K_sat_marginal_CDF); //Assigning CDFs to properties
+    SetMarginalDistribution("K_sat", mp->MarginalCDF("K_sat")); //Assigning CDFs to properties
 
-    P->SetMarginalDistribution("alpha", alpha_marginal_CDF);
+    SetMarginalDistribution("alpha", mp->MarginalCDF("alpha"));
 
-    P->SetMarginalDistribution("n", n_marginal_CDF);
+    SetMarginalDistribution("n", mp->MarginalCDF("n"));
 
-    P->PopulateRealValue("K_sat", "K_sat_normal_score"); //Assign the actual K_sat
+    PopulateRealValue("K_sat", "K_sat_normal_score"); //Assign the actual K_sat
 
-    P->Normalize("K_sat", P->mean("K_sat", true)); //Normalize K_sat by the geometrical mean of K_sat so the geometrical mean is zero
+    Normalize("K_sat", mean("K_sat", true)); //Normalize K_sat by the geometrical mean of K_sat so the geometrical mean is zero
 
-    P->Populate_Alpha_n_normal_scores(params::alpha); //Creates normal scores for alpha
-    P->Populate_Alpha_n_normal_scores(params::n); //Creates normal scores for n
-    P->PopulateRealValue("alpha", "alpha_normal_score"); //Assign the actual values of alpha
-    P->Normalize("alpha", 0.05);
-    P->PopulateRealValue("n", "n_normal_score"); //.. n
-    P->write("K_sat", working_folder + "K_sat.txt");
-    P->write("alpha", working_folder + "alpha.txt");
-    P->write("n", working_folder + "n.txt");
+    Populate_Alpha_n_normal_scores(params::alpha); //Creates normal scores for alpha
+    Populate_Alpha_n_normal_scores(params::n); //Creates normal scores for n
+    PopulateRealValue("alpha", "alpha_normal_score"); //Assign the actual values of alpha
+    Normalize("alpha", 0.05);
+    PopulateRealValue("n", "n_normal_score"); //.. n
+    write("K_sat", working_folder + "K_sat.txt");
+    write("alpha", working_folder + "alpha.txt");
+    write("n", working_folder + "n.txt");
+    return true; 
 }
 
 bool PropertyGenerator::write(const std::string &quan, const std::string &filename) const

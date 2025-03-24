@@ -17,4 +17,6 @@ private:
     const double pi = 3.141521;
 };
 
+void createFolderIfNotExists(const QString& folderPath);
+
 #endif // MODELCREATOR_H

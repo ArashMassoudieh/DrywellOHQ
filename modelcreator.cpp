@@ -1,6 +1,7 @@
 #include "modelcreator.h"
 #include "System.h"
 #include "QString"
+#include <QDir>
 
 ModelCreator::ModelCreator()
 {
@@ -21,6 +22,9 @@ bool ModelCreator::Create(ModelParameters mp, System *system)
     system->AppendQuanTemplate("/home/arash/Projects/QAquifolium/resources/Well.json");
     system->ReadSystemSettingsTemplate("/home/arash/Projects/QAquifolium/resources/settings.json");
 #endif
+    system->SetWorkingFolder(mp.Workingfolder().toStdString() + "/" + mp.Outputfolder().toStdString() + "/");
+    createFolderIfNotExists(mp.Workingfolder() + "/" + mp.Outputfolder());
+
     if (mp.Tracer())
     {
         Constituent C;
@@ -194,9 +198,13 @@ bool ModelCreator::Create(ModelParameters mp, System *system)
     well.SetVal("y",0);
     if (mp.Tracer())
         well.SetVal("Tracer:concentration",mp.GetValue("initial_concentration"));
-    CTimeSeries<double> inflow = CTimeSeries<double>();
-    inflow.CreatePeriodicStepFunction(0,mp.GetValue("t_end"), 0.5, 1.5, 0.5);
-    well.Variable("inflow")->SetTimeSeries(inflow);
+    if (mp.GetInflowMode() == FlowMode::periodic)
+    {
+        CTimeSeries<double> inflow = CTimeSeries<double>();
+        inflow.CreatePeriodicStepFunction(0, mp.GetValue("t_end"), 0.5, 1.5, 0.5);
+        well.Variable("inflow")->SetTimeSeries(inflow);
+    }
+    
     system->AddBlock(well,false);
 
     std::cout<<"Well to soil"<<endl;
@@ -250,4 +258,19 @@ bool ModelCreator::Create(ModelParameters mp, System *system)
     cout<<"Variable parents"<<endl;
     system->SetVariableParents();
     return true;
+}
+
+void createFolderIfNotExists(const QString& folderPath) {
+    QDir dir(folderPath);
+    if (!dir.exists()) {
+        if (dir.mkpath(".")) {
+            qDebug() << "Folder created successfully:" << folderPath;
+        }
+        else {
+            qDebug() << "Failed to create folder:" << folderPath;
+        }
+    }
+    else {
+        qDebug() << "Folder already exists:" << folderPath;
+    }
 }

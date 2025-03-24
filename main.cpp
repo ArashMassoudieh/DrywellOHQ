@@ -21,21 +21,28 @@ int main(int argc, char *argv[])
     mp.SetValue("theta_sat" , 0.4);
     mp.SetValue("theta_r" , 0.05);
     mp.SetValue("initial_theta" , 0.2);
-    mp.SetMode (Mode::homogeneous);
+    mp.SetMode (Mode::heterogeneous);
+    mp.SetInflowMode(FlowMode::no_flow);
     mp.SetValue("Correlation_Length_Scale", 1);
+    mp.SetValue("initial_water_depth", 1);
     mp.SetValue("alpha_Ksat_Cor", 0.378);
     mp.SetValue("K_sat_stdev" , 0.5);
     mp.SetValue("n_Ksat_Cor" , 0.2);
     mp.SetTracer(true);
-    mp.SetValue("t_end" , 30);
-    mp.SetValue("dt0" , 0.1);
-    int i=0;
+    mp.SetValue("t_end" , 1);
+    mp.SetValue("dt0" , 0.01);
+    mp.SetWorkingfolder("C:/Projects/DryWellModels/Heterogeneous");
+    mp.SetMarginalCDF("K_sat", mp.Workingfolder() + "/K_sat_Marginal_Distribution.csv");
+    mp.SetMarginalCDF("alpha", mp.Workingfolder() + "/alpha_Marginal_Distribution.csv");
+    mp.SetMarginalCDF("n", mp.Workingfolder() + "/n_Marginal_Distribution.csv");
+    mp.SetOutputfolder("Case 1");
 
-    string working_folder = "C:/Projects/DryWellModels/";
+    
+    int i = 0; 
     if (mp.GetMode() == Mode::heterogeneous)
     {
         PropertyGenerator *P = new PropertyGenerator(mp.GridSize("z"), i * 505);
-        
+        P->Generate(&mp);
         mp.property_generator = P;
     }
 
@@ -44,19 +51,21 @@ int main(int argc, char *argv[])
     cout<<"Creating model ..." <<endl;
     ModCreate.Create(mp,system);
     cout<<"Creating model done..." <<endl;
-    system->SetWorkingFolder(working_folder);
-
+    
     system->SetSilent(false);
     cout<<"Saving"<<endl;
     system->SetProp("tend",10);
     system->SetProp("initial_time_step",0.1);
-    system->block("Well")->Variable("inflow")->TimeSeries()->writefile(working_folder + "inflow.csv");
-    system->block("Well")->Variable("inflow")->TimeSeries()->filename = working_folder + "inflow.csv";
-    system->SavetoScriptFile(working_folder +"CreatedModel.ohq");
+    if (mp.GetInflowMode() == FlowMode::periodic)
+    {
+        system->block("Well")->Variable("inflow")->TimeSeries()->writefile(mp.Workingfolder().toStdString() + "inflow.csv");
+        system->block("Well")->Variable("inflow")->TimeSeries()->filename = mp.Workingfolder().toStdString() + "inflow.csv";
+    }
+    system->SavetoScriptFile(mp.Workingfolder().toStdString() + "/" + mp.Outputfolder().toStdString() + "/CreatedModel.ohq");
 
     cout<<"Solving ..."<<endl;
-    system->SetProp("tend",mp.t_end);
-    system->SetProp("initial_time_step",mp.dt0);
+    system->SetProp("tend",mp.GetValue("t_end"));
+    system->SetProp("initial_time_step",mp.GetValue("dt0"));
     system->Solve();
     cout<<"Writing outputs in '"<< system->GetWorkingFolder() + system->OutputFileName() +"'"<<endl;
     CTimeSeriesSet<double> output = system->GetOutputs();
@@ -72,7 +81,7 @@ int main(int argc, char *argv[])
     cout<<"Writing TimeSeries"<<endl;
     (resgridstorage.Sum()-100000).writefile(system->GetWorkingFolder()+"storage.csv");
 
-    if (mp.tracer)
+    if (mp.Tracer())
     {   cout<<"Getting concentration results into grid"<<endl;
         ResultGrid resgridconcentration(output,"Tracer:concentration",system);
         cout<<"Writing VTPs"<<endl;
@@ -89,7 +98,7 @@ int main(int argc, char *argv[])
     well_depth.Sum().writefile(system->GetWorkingFolder()+"WaterDepth.csv");
 
     vector<string> GWRechargeBlocks;
-    for (int i=0; i<mp.nr+1; i++)
+    for (int i=0; i<mp.GridSize("r") ; i++)
     {
         GWRechargeBlocks.push_back(("Soil to Groundwater (" + QString::number(i) + ")").toStdString());
     }
@@ -98,9 +107,9 @@ int main(int argc, char *argv[])
 
 
     vector<string> InfiltrationBlocks;
-    for (int i=0; i<mp.nz; i++)
+    for (int i=0; i<mp.GridSize("z"); i++)
     {
-        if (i*mp.DepthtoGroundWater/mp.nz<mp.DepthofWell)
+        if (i*mp.GetValue("DepthtoGroundWater") / mp.GridSize("z")<mp.GetValue("DepthofWell"))
         InfiltrationBlocks.push_back(("Well to Soil (" + QString::number(i) + ")").toStdString());
     }
     InfiltrationBlocks.push_back("Well_to_bottom");
@@ -128,9 +137,9 @@ int main(int argc, char *argv[])
     TTD_blocks.push_back("Groundwater");
 
     ResultGrid TTD = ResultGrid(output,TTD_blocks,"Tracer:mass");
-    (TTD.Sum()/(mp.DepthofWell*mp.rw*mp.rw*3.141521*mp.initial_concentration*mp.initial_water_depth)).writefile(system->GetWorkingFolder() + "TTD_Cum.csv");
+    (TTD.Sum()/(mp.GetValue("DepthofWell") * mp.GetValue("rw") * mp.GetValue("rw") * 3.141521 * mp.GetValue("initial_concentration") * mp.GetValue("initial_water_depth"))).writefile(system->GetWorkingFolder() + "TTD_Cum.csv");
 
-    (TTD.Sum()/(mp.DepthofWell*mp.rw*mp.rw*3.141521*mp.initial_concentration*mp.initial_water_depth)).derivative().writefile(system->GetWorkingFolder() + "TTD.csv");
+    (TTD.Sum()/(mp.GetValue("DepthofWell") * mp.GetValue("rw") * mp.GetValue("rw") * 3.141521 * mp.GetValue("initial_concentration") * mp.GetValue("initial_water_depth"))).derivative().writefile(system->GetWorkingFolder() + "TTD.csv");
     
     QTime end_time = QTime::currentTime();
     cout<<"End time = " + end_time.toString().toStdString();
