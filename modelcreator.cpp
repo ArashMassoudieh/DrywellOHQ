@@ -17,10 +17,15 @@ bool ModelCreator::Create(ModelParameters mp, System *system)
     system->AppendQuanTemplate("C:/Projects/OpenHydroQual/resources/unsaturated_soil.json");
     system->AppendQuanTemplate("C:/Projects/OpenHydroQual/resources/Well.json");
     system->ReadSystemSettingsTemplate("C:/Projects/OpenHydroQual/resources/settings.json");
-#else
+#elif Arash
     system->GetQuanTemplate("/home/arash/Projects/QAquifolium/resources/main_components.json");
     system->AppendQuanTemplate("/home/arash/Projects/QAquifolium/resources/unsaturated_soil.json");
     system->AppendQuanTemplate("/home/arash/Projects/QAquifolium/resources/Well.json");
+    system->ReadSystemSettingsTemplate("/home/arash/Projects/QAquifolium/resources/settings.json");
+#elif Arash_home
+    system->GetQuanTemplate("/home/arash/Projects/OpenHydroQual/resources/main_components.json");
+    system->AppendQuanTemplate("/home/arash/Projects/OpenHydroQual/resources/unsaturated_soil.json");
+    system->AppendQuanTemplate("/home/arash/Projects/OpenHydroQual/resources/Well.json");
     system->ReadSystemSettingsTemplate("/home/arash/Projects/QAquifolium/resources/settings.json");
 #endif
     system->SetWorkingFolder(mp.Workingfolder().toStdString() + "/" + mp.Outputfolder().toStdString() + "/");

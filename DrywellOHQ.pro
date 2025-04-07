@@ -9,8 +9,8 @@ CONFIG -= app_bundle
 
 CONFIG += c++14
 
-CONFIG += Arash
-DEFINES += Arash
+CONFIG += Arash_home
+DEFINES += Arash_home
 
 Arash {
     OHQPATH = /home/arash/Projects/QAquifolium/aquifolium
@@ -18,6 +18,14 @@ Arash {
     VTKHEADERPATH = /home/arash/Projects/VTK
     VTK_V = -9.0
 }
+
+Arash_home {
+    OHQPATH = /home/arash/Projects/OpenHydroQual/aquifolium
+    VTKBUILDPATH = /home/arash/Projects/VTK-9.4.1/build
+    VTKHEADERPATH = /home/arash/Projects/VTK-9.4.1
+    VTK_V = -9.4
+}
+
 
 DEFINES += use_VTK ARMA_USE_SUPERLU _arma GSL #SUPER_LU
 CONFIG += use_VTK
@@ -119,7 +127,7 @@ SOURCES += \
         $$OHQPATH/src/GA/Individual.cpp \
         $$OHQPATH/src/GA/DistributionNUnif.cpp \
         $$OHQPATH/src/GA/Distribution.cpp \
-        ../QAquifolium/aquifolium/src/Matrix_arma_sp.cpp \
+        $$OHQPATH/src/Matrix_arma_sp.cpp \
         ../jsoncpp/src/lib_json/json_reader.cpp \
         ../jsoncpp/src/lib_json/json_value.cpp \
         ../jsoncpp/src/lib_json/json_writer.cpp \
@@ -281,7 +289,7 @@ use_VTK {
     LIBS += -L$$VTKBUILDPATH/lib/ -lvtkfreetype$$VTK_V
     LIBS += -L$$VTKBUILDPATH/lib/ -lvtkGeovisCore$$VTK_V
     LIBS += -L$$VTKBUILDPATH/lib/ -lvtkgl2ps$$VTK_V
-    LIBS += -L$$VTKBUILDPATH/lib/ -lvtkglew$$VTK_V
+    #LIBS += -L$$VTKBUILDPATH/lib/ -lvtkglew$$VTK_V
     LIBS += -L$$VTKBUILDPATH/lib/ -lvtkhdf5$$VTK_V
     LIBS += -L$$VTKBUILDPATH/lib/ -lvtkhdf5_hl$$VTK_V
     LIBS += -L$$VTKBUILDPATH/lib/ -lvtkImagingColor$$VTK_V
@@ -359,6 +367,7 @@ use_VTK {
     INCLUDEPATH +=$${VTKBUILDPATH}/Common/Color
     INCLUDEPATH +=$${VTKBUILDPATH}/Common/DataModel
     INCLUDEPATH +=$${VTKBUILDPATH}/Utilities/KWIML
+    INCLUDEPATH +=$${VTKBUILDPATH}/Utilities/KWSys
     INCLUDEPATH +=$${VTKHEADERPATH}/Utilities/KWIML
     INCLUDEPATH +=$${VTKHEADERPATH}/Rendering/Core
     INCLUDEPATH +=$${VTKBUILDPATH}/Rendering/Core
@@ -394,9 +403,13 @@ use_VTK {
     INCLUDEPATH +=$${VTKBUILDPATH}/IO/Image
     INCLUDEPATH +=$${VTKHEADERPATH}/Imaging/Core
     INCLUDEPATH +=$${VTKBUILDPATH}/Imaging/Core
-    INCLUDEPATH +=$${VTKBUILDPATH}/Utilities/KWSys
-
+    INCLUDEPATH +=$${VTKBUILDPATH}/ThirdParty/nlohmannjson
+    INCLUDEPATH +=$${VTKHEADERPATH}/ThirdParty/nlohmannjson
+    INCLUDEPATH +=$${VTKHEADERPATH}/Parallel/Core/
 }
+
+
+message(INCLUDEPATH: $$INCLUDEPATH)
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

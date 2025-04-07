@@ -10,3 +10,7 @@ x64/Debug/
 DrywellOHQ/x64/Release/
 
 x64/Release/
+
+build/Desktop_Qt_6_8_2-Debug/
+
+build/Desktop_Qt_6_8_2-Release/
